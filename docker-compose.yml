@@ -1,9 +1,12 @@
-version: '3.8'
+version: "3.8"
 
 services:
   cache:
     container_name: cache
-    image: redis
+    image: bitnami/redis
+    environment:
+      - REDIS_DATABASE=cache
+      - REDIS_PASSWORD=redis
     ports:
       - 6379:6379
     volumes:

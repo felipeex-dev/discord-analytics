@@ -6,6 +6,7 @@ export class RedisService extends Redis {
     super({
       host: env.REDIS_HOST,
       port: env.REDIS_PORT,
+      password: env.REDIS_PASSWORD,
       db: env.REDIS_DB,
     });
   }

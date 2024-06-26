@@ -1,9 +1,16 @@
 import { Client, GatewayIntentBits, REST, Routes } from "discord.js";
 import { env } from "../environment";
 import { CreateMember } from "./member/create-member";
-import { addInvite, inviteCommand } from "./invite/add-invite-command";
+import { addInvite, addInviteCommand } from "./invite/add-invite-command";
+import {
+  reloadInviteCommand,
+  reloadInvites,
+} from "./invite/reload-invites-command";
 
-const commands = [{ function: addInvite, informations: inviteCommand }];
+const commands = [
+  { function: addInvite, informations: addInviteCommand },
+  { function: reloadInvites, informations: reloadInviteCommand },
+];
 
 export class DiscordBOT extends Client {
   constructor() {
@@ -37,7 +44,7 @@ export class DiscordBOT extends Client {
 const discord = new DiscordBOT();
 discord.init();
 
-discord.on("ready", () => {
+discord.on("ready", async (client) => {
   console.log("Discord BOT started!");
 });
 

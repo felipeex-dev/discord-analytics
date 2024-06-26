@@ -2,7 +2,7 @@ import { RedisService } from "@/infra/cache/redis";
 import { RedisCacheRepository } from "@/infra/cache/redis/redis-cache-repository";
 import { CacheType, ChatInputCommandInteraction } from "discord.js";
 
-export const inviteCommand = {
+export const addInviteCommand = {
   name: "add-invite",
   description: "Adicionar um convite para ser monitado.",
   options: [
