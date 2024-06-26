@@ -4,19 +4,22 @@ import { Member } from "../../enterprise/entities/member";
 import { MemberAlreadyExistError } from "./errors/member-already-exist";
 
 export interface CreateMemberUseCaseRequest {
+  inviteCode: string;
   discordId: string;
   name: string;
-  origin: string;
 }
 
-type CreateMemberUseCaseResponse = Either<unknown, { member: Member }>;
+type CreateMemberUseCaseResponse = Either<
+  MemberAlreadyExistError,
+  { member: Member }
+>;
 
 export class CreateMemberUseCase {
   constructor(private memberRepository: MemberRepository) {}
   async execute({
+    inviteCode,
     discordId,
     name,
-    origin,
   }: CreateMemberUseCaseRequest): Promise<CreateMemberUseCaseResponse> {
     const findMemberByDiscordId = await this.memberRepository.findByDiscordId(
       discordId
@@ -27,9 +30,9 @@ export class CreateMemberUseCase {
     }
 
     const member = Member.create({
+      inviteCode,
       discordId,
       name,
-      origin,
     });
 
     await this.memberRepository.create(member);

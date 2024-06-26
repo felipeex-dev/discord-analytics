@@ -1,5 +1,9 @@
 import { RedisService } from "@/infra/cache/redis";
-import { CacheType, ChatInputCommandInteraction } from "discord.js";
+import {
+  ApplicationCommandOptionType,
+  CacheType,
+  ChatInputCommandInteraction,
+} from "discord.js";
 import { DiscordInviteRepository } from "../../repositories/discord-invite-repository";
 
 export const addInviteCommand = {
@@ -7,10 +11,22 @@ export const addInviteCommand = {
   description: "Adicionar um convite para ser monitado.",
   options: [
     {
-      name: "invite",
-      description: "Adicione o código do invite EX: AaWB49AS",
-      type: 3,
+      name: "name",
+      description: "Adicione o nome do convite",
+      type: ApplicationCommandOptionType.String,
       required: true,
+    },
+    {
+      name: "code",
+      description: "Adicione o código do invite EX: AaWB49AS",
+      type: ApplicationCommandOptionType.String,
+      required: true,
+    },
+    {
+      name: "investment-value",
+      description: "Adicione o valor do investimento",
+      type: ApplicationCommandOptionType.Number,
+      required: false,
     },
   ],
 };

@@ -1,6 +1,8 @@
 import { RedisService } from "@/infra/cache/redis";
 import { GatewayInviteRepository } from "../../repositories/gateway-invite-respository";
 import { CacheType, ChatInputCommandInteraction } from "discord.js";
+import { PrismaInviteRepository } from "@/infra/database/prisma/repositories/prisma-invite-repository";
+import { RegisterInviteUseCase } from "@/domain/analytics/application/use-case/register-invite";
 
 export class DiscordInviteRepository implements GatewayInviteRepository {
   constructor(private redis: RedisService) {}
@@ -29,10 +31,13 @@ export class DiscordInviteRepository implements GatewayInviteRepository {
 
   async create(interaction: ChatInputCommandInteraction<CacheType>) {
     await interaction.deferReply({ ephemeral: true });
-    const inviteCode = interaction.options.get("invite");
+    const inviteName = interaction.options.get("name")?.value as string;
+    const inviteCode = interaction.options.get("code")?.value as string;
+    const inviteInvestimentValue = interaction.options.get("investment-value")
+      ?.value as number;
 
-    if (inviteCode && inviteCode.value) {
-      const inviteCodeValue = inviteCode.value;
+    if (inviteCode && inviteCode) {
+      const inviteCodeValue = inviteCode;
       const existsInvites = await interaction.guild?.invites.fetch();
       const isExistInviteToAdd = existsInvites?.find(
         (invite) => invite.code === inviteCodeValue
@@ -55,6 +60,17 @@ export class DiscordInviteRepository implements GatewayInviteRepository {
         );
         await interaction.editReply({
           content: "Convite adicionado com sucesso!",
+        });
+
+        const prismaInviteRepository = new PrismaInviteRepository();
+        const registerInviteUseCase = new RegisterInviteUseCase(
+          prismaInviteRepository
+        );
+
+        await registerInviteUseCase.execute({
+          name: inviteName,
+          code: inviteCodeValue.toString(),
+          investmentValue: inviteInvestimentValue ?? 0,
         });
 
         this.redis.disconnect();

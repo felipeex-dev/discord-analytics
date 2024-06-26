@@ -6,9 +6,9 @@ export class PrismaMemberMapper {
   static toDomain(raw: PrismaMember): Member {
     return Member.create(
       {
+        inviteCode: raw.inviteCode,
         discordId: raw.discordId,
         name: raw.name,
-        origin: raw.origin,
         createdAt: raw.createdAt,
         updatedAt: raw.updatedAt,
       },
@@ -18,10 +18,10 @@ export class PrismaMemberMapper {
 
   static toPrisma(member: Member): Prisma.MemberUncheckedCreateInput {
     return {
+      inviteCode: member.inviteCode,
       id: member.id.toString(),
       discordId: member.discordId,
       name: member.name,
-      origin: member.origin,
       createdAt: member.createdAt,
       updatedAt: member.updatedAt,
     };

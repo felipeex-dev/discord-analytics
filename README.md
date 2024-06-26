@@ -14,6 +14,7 @@ Funcionalidades:
 
 Divulgação 1 - BrmGuU592M | Data de inicio: 25/06/24 as 13:50
 Valor investido: R$25
+Quantidade de Entradas: 15
 Membros convertidos: 10
 Clientes convertidos: 5
 Taxa de conversão para clientes: 50%

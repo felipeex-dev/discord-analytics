@@ -2,25 +2,25 @@ import { Entity } from "@/core/entities/entity";
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
 import { Optional } from "@/core/types/optional";
 
-export interface MemberProps {
-  inviteCode: string;
-  discordId: string;
+export interface InviteProps {
   name: string;
+  code: string;
+  investmentValue: number;
   createdAt: Date;
   updatedAt?: Date | null;
 }
 
-export class Member extends Entity<MemberProps> {
-  get inviteCode() {
-    return this.props.inviteCode;
-  }
-
-  get discordId() {
-    return this.props.discordId;
-  }
-
+export class Invite extends Entity<InviteProps> {
   get name() {
     return this.props.name;
+  }
+
+  get code() {
+    return this.props.code;
+  }
+
+  get investmentValue() {
+    return this.props.investmentValue;
   }
 
   get createdAt() {
@@ -32,13 +32,13 @@ export class Member extends Entity<MemberProps> {
   }
 
   static create(
-    props: Optional<MemberProps, "createdAt">,
+    props: Optional<InviteProps, "createdAt">,
     id?: UniqueEntityID
   ) {
-    const member = new Member(
+    const invite = new Invite(
       { ...props, createdAt: props.createdAt ?? new Date() },
       id
     );
-    return member;
+    return invite;
   }
 }

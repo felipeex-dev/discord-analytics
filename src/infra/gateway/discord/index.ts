@@ -10,10 +10,15 @@ import {
 import { env } from "@/infra/environment";
 import { DiscordMemberRepository } from "./repositories/discord-member-repository";
 import { RedisService } from "@/infra/cache/redis";
+import {
+  generateAnalytics,
+  generateAnalyticsCommand,
+} from "./commands/analytics/generate-analytics-command";
 
 const commands = [
   { function: addInvite, informations: addInviteCommand },
   { function: reloadInvites, informations: reloadInviteCommand },
+  { function: generateAnalytics, informations: generateAnalyticsCommand },
 ];
 
 export class DiscordBOT extends Client {

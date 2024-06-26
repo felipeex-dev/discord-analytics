@@ -12,9 +12,9 @@ export function makeMember(
 ): Member {
   const member = Member.create(
     {
+      inviteCode: faker.internet.domainName(),
       discordId: randomUUID(),
       name: faker.person.fullName(),
-      origin: faker.internet.domainName(),
       ...override,
     },
     id

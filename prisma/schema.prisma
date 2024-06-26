@@ -7,13 +7,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Member {
+model Invite {
   id String @id @default(uuid())
-  discordId String @unique @map("discord_id")
   name String
-  origin String
+  code String @unique
+  investmentValue Float
+
+  members Member[]
+
   createdAt  DateTime  @default(now()) @map("created_at")
   updatedAt  DateTime? @updatedAt @map("updated_at")
+
+  @@map("invites")
+}
+
+model Member {
+  id String @id @default(uuid())
+  inviteCode String @map("invite_code")
+  discordId String @unique @map("discord_id")
+  name String
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime? @updatedAt @map("updated_at")
+
+  invite Invite @relation(fields: [inviteCode], references: [code])
 
   @@map("members")
 }

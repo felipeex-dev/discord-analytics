@@ -26,9 +26,9 @@ export class DiscordMemberRepository implements GatewayMemberRepository {
         );
 
         await createMemberUseCase.execute({
+          inviteCode: invite,
           discordId: id,
           name: displayName,
-          origin: invite,
         });
 
         this.redis.disconnect();
