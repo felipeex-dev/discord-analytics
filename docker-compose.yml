@@ -1,12 +1,22 @@
 version: "3.8"
 
 services:
+  postgres:
+    container_name: discord-analytics-pg
+    image: bitnami/postgresql
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: gAX78IkIs9HhokQrqUZkYihEkGyCl4NQGMFJ6iVj
+      POSTGRES_DB: discord-analytics
+
   cache:
-    container_name: cache
+    container_name: discord-analytics-cache
     image: bitnami/redis
     environment:
-      - REDIS_DATABASE=cache
-      - REDIS_PASSWORD=redis
+      - REDIS_DATABASE=discord-analytics-cache
+      - REDIS_PASSWORD=RyGmwyOXWR1u1N8kz0YjPgbKPnxIFwcpSP1sMywA
     ports:
       - 6379:6379
     volumes:

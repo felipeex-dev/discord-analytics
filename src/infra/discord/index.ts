@@ -44,7 +44,7 @@ export class DiscordBOT extends Client {
 const discord = new DiscordBOT();
 discord.init();
 
-discord.on("ready", async (client) => {
+discord.on("ready", async () => {
   console.log("Discord BOT started!");
 });
 

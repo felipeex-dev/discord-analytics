@@ -1,2 +1,12 @@
+# compiled output
+build
 node_modules
+
+# Tests
 coverage
+
+# ENV
+.env
+
+# Docker
+data

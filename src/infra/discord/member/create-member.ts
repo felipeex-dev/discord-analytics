@@ -1,12 +1,10 @@
 import { CreateMemberUseCase } from "@/domain/analytics/application/use-case/create-member";
 import { redis, redisService } from "@/infra/cache/redis";
-import { RedisCacheRepository } from "@/infra/cache/redis/redis-cache-repository";
 import { PrismaMemberRepository } from "@/infra/database/prisma/repositories/prisma-member-repository";
 import { GuildMember } from "discord.js";
 
-export async function CreateMember(member: GuildMember) {
-  const guildInvites = await member.guild.invites.fetch();
-
+export async function CreateMember({ guild, id, displayName }: GuildMember) {
+  const guildInvites = await guild.invites.fetch();
   const invitesCache = await redisService.keys("*");
 
   invitesCache.map(async (invite) => {
@@ -16,7 +14,17 @@ export async function CreateMember(member: GuildMember) {
 
     if (guildInvite.uses > inviteInCache) {
       await redis.set(invite, (inviteInCache + 1).toString());
-      console.log(member.id, member.displayName, invite);
+
+      const prismaMemberRepository = new PrismaMemberRepository();
+      const createMemberUseCase = new CreateMemberUseCase(
+        prismaMemberRepository
+      );
+
+      await createMemberUseCase.execute({
+        discordId: id,
+        name: displayName,
+        origin: invite,
+      });
     }
   });
 }

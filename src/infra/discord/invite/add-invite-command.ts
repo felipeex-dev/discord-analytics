@@ -35,7 +35,10 @@ export async function addInvite(
     const inviteExistInCache = await redis.get(inviteCodeValue.toString());
 
     if (!inviteExistInCache) {
-      await redis.set(inviteCodeValue.toString(), "0");
+      await redis.set(
+        inviteCodeValue.toString(),
+        (isExistInviteToAdd.uses ?? 0).toString()
+      );
       await interaction.editReply({
         content: "Convite adicionado com sucesso!",
       });

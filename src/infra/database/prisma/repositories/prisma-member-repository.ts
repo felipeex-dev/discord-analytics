@@ -2,12 +2,13 @@ import { MemberRepository } from "@/domain/analytics/application/repositories/me
 import { Member } from "@/domain/analytics/enterprise/entities/member";
 
 export class PrismaMemberRepository implements MemberRepository {
-  create(member: Member): Promise<void> {
+  async create(member: Member) {
     console.log(member);
-    throw new Error("Method not implemented.");
+    // throw new Error("Method not implemented.");
   }
 
-  findByDiscordId(discordId: string): Promise<Member | null> {
-    throw new Error("Method not implemented.");
+  async findByDiscordId(discordId: string): Promise<Member | null> {
+    return null;
+    // throw new Error("Method not implemented.");
   }
 }
