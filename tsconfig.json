@@ -3,7 +3,7 @@
     "target": "ES2022",
     "module": "commonjs",
 
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"],
       "@test/*": ["test/*"]

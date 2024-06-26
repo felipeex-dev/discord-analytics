@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Esse BOT tem como objetivo analisar dados, para que possa ser feito um levantamento.",
   "scripts": {
-    "start:dev": "tsnd ./src/infra/main.ts",
+    "start:dev": "tsnd -r tsconfig-paths/register src/infra/main.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -14,6 +14,7 @@
     "@vitest/ui": "^1.4.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.4",
     "unplugin-swc": "^1.4.5",
     "vite-tsconfig-paths": "^4.3.2",
@@ -25,6 +26,7 @@
   "dependencies": {
     "discord.js": "^14.15.3",
     "dotenv": "^16.4.5",
+    "ioredis": "^5.4.1",
     "zod": "^3.23.8"
   }
 }

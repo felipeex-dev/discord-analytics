@@ -1,6 +1,9 @@
 import { Client, GatewayIntentBits, REST, Routes } from "discord.js";
 import { env } from "../environment";
 import { CreateMember } from "./member/create-member";
+import { addInvite, inviteCommand } from "./invite/add-invite-command";
+
+const commands = [{ function: addInvite, informations: inviteCommand }];
 
 export class DiscordBOT extends Client {
   constructor() {
@@ -18,7 +21,9 @@ export class DiscordBOT extends Client {
 
     try {
       await discordREST.put(Routes.applicationCommands(env.DISCORD_CLIENT_ID), {
-        body: [],
+        body: commands.map((command) => {
+          return command.informations;
+        }),
       });
 
       this.login(env.DISCORD_TOKEN);
@@ -34,6 +39,15 @@ discord.init();
 
 discord.on("ready", () => {
   console.log("Discord BOT started!");
+});
+
+discord.on("interactionCreate", async (interaction) => {
+  if (!interaction.isChatInputCommand()) return;
+
+  commands.map((command) => {
+    if (interaction.commandName === command.informations.name)
+      command.function(interaction);
+  });
 });
 
 discord.on("guildMemberAdd", (member) => {
