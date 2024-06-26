@@ -1,5 +1,5 @@
 import { CreateMemberUseCase } from "@/domain/analytics/application/use-case/create-member";
-import { RedisService } from "@/infra/cache/redis";
+import { redis, redisService } from "@/infra/cache/redis";
 import { RedisCacheRepository } from "@/infra/cache/redis/redis-cache-repository";
 import { PrismaMemberRepository } from "@/infra/database/prisma/repositories/prisma-member-repository";
 import { GuildMember } from "discord.js";
@@ -7,8 +7,6 @@ import { GuildMember } from "discord.js";
 export async function CreateMember(member: GuildMember) {
   const guildInvites = await member.guild.invites.fetch();
 
-  const redisService = new RedisService();
-  const redis = new RedisCacheRepository(redisService);
   const invitesCache = await redisService.keys("*");
 
   invitesCache.map(async (invite) => {
@@ -21,6 +19,4 @@ export async function CreateMember(member: GuildMember) {
       console.log(member.id, member.displayName, invite);
     }
   });
-
-  redisService.disconnect();
 }

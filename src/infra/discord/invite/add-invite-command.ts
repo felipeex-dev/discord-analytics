@@ -1,5 +1,4 @@
-import { RedisService } from "@/infra/cache/redis";
-import { RedisCacheRepository } from "@/infra/cache/redis/redis-cache-repository";
+import { redis } from "@/infra/cache/redis";
 import { CacheType, ChatInputCommandInteraction } from "discord.js";
 
 export const addInviteCommand = {
@@ -33,8 +32,6 @@ export async function addInvite(
         content: "Esse código de convite não existe.",
       });
 
-    const redisService = new RedisService();
-    const redis = new RedisCacheRepository(redisService);
     const inviteExistInCache = await redis.get(inviteCodeValue.toString());
 
     if (!inviteExistInCache) {
@@ -47,7 +44,5 @@ export async function addInvite(
         content: "Esse convite já foi adicionado.",
       });
     }
-
-    redisService.disconnect();
   }
 }

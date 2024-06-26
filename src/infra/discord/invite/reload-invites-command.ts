@@ -1,5 +1,4 @@
-import { RedisService } from "@/infra/cache/redis";
-import { RedisCacheRepository } from "@/infra/cache/redis/redis-cache-repository";
+import { redis, redisService } from "@/infra/cache/redis";
 import { CacheType, ChatInputCommandInteraction } from "discord.js";
 
 export const reloadInviteCommand = {
@@ -13,8 +12,6 @@ export async function reloadInvites(
   await interaction.deferReply({ ephemeral: true });
   const guildInvites = await interaction.guild?.invites.fetch();
 
-  const redisService = new RedisService();
-  const redis = new RedisCacheRepository(redisService);
   const invitesCache = await redisService.keys("*");
 
   invitesCache.map(async (invite) => {
@@ -27,6 +24,4 @@ export async function reloadInvites(
   await interaction.editReply({
     content: "Recarregado com sucesso!",
   });
-
-  redisService.disconnect();
 }
