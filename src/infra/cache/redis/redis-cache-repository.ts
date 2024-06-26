@@ -8,6 +8,10 @@ export class RedisCacheRepository implements CacheRepository {
     await this.redis.set(key, value);
   }
 
+  async keys(pattern: string): Promise<string[]> {
+    return await this.redis.keys(pattern);
+  }
+
   get(key: string): Promise<string | null> {
     return this.redis.get(key);
   }

@@ -4,7 +4,7 @@ import {
   MemberProps,
 } from "@/domain/analytics/enterprise/entities/member";
 import { faker } from "@faker-js/faker";
-import { randomUUID } from "crypto";
+import { randomUUID } from "node:crypto";
 
 export function makeMember(
   override: Partial<MemberProps> = {},

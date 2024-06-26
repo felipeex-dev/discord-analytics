@@ -1,11 +1,15 @@
 import { Client, GatewayIntentBits, REST, Routes } from "discord.js";
-import { env } from "../environment";
-import { CreateMember } from "./member/create-member";
-import { addInvite, addInviteCommand } from "./invite/add-invite-command";
+import {
+  addInvite,
+  addInviteCommand,
+} from "./commands/invite/add-invite-command";
 import {
   reloadInviteCommand,
   reloadInvites,
-} from "./invite/reload-invites-command";
+} from "./commands/invite/reload-invites-command";
+import { env } from "@/infra/environment";
+import { DiscordMemberRepository } from "./repositories/discord-member-repository";
+import { RedisService } from "@/infra/cache/redis";
 
 const commands = [
   { function: addInvite, informations: addInviteCommand },
@@ -52,11 +56,15 @@ discord.on("interactionCreate", async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
   commands.map((command) => {
-    if (interaction.commandName === command.informations.name)
+    if (interaction.commandName === command.informations.name) {
       command.function(interaction);
+    }
   });
 });
 
 discord.on("guildMemberAdd", (member) => {
-  CreateMember(member);
+  const redis = new RedisService();
+  const discordMemberRepository = new DiscordMemberRepository(redis);
+
+  discordMemberRepository.create(member);
 });

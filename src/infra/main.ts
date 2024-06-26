@@ -1,1 +1,1 @@
-import "./discord";
+import "./gateway/discord";

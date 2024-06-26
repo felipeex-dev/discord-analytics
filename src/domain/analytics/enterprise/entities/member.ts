@@ -3,7 +3,7 @@ import { UniqueEntityID } from "@/core/entities/unique-entity-id";
 import { Optional } from "@/core/types/optional";
 
 export interface MemberProps {
-  discordId: string
+  discordId: string;
   name: string;
   origin: string;
   createdAt: Date;
@@ -21,6 +21,14 @@ export class Member extends Entity<MemberProps> {
 
   get origin() {
     return this.props.origin;
+  }
+
+  get createdAt() {
+    return this.props.createdAt;
+  }
+
+  get updatedAt() {
+    return this.props.updatedAt;
   }
 
   static create(

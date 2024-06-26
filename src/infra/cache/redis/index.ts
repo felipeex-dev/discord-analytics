@@ -1,6 +1,5 @@
 import { env } from "@/infra/environment";
 import { Redis } from "ioredis";
-import { RedisCacheRepository } from "./redis-cache-repository";
 
 export class RedisService extends Redis {
   constructor() {
@@ -12,8 +11,3 @@ export class RedisService extends Redis {
     });
   }
 }
-
-const redisService = new RedisService();
-const redis = new RedisCacheRepository(redisService);
-
-export { redisService, redis };

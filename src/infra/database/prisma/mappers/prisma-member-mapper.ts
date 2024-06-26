@@ -1,24 +1,29 @@
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
 import { Member } from "@/domain/analytics/enterprise/entities/member";
+import { Prisma, Member as PrismaMember } from "@prisma/client";
 
 export class PrismaMemberMapper {
   static toDomain(raw: PrismaMember): Member {
     return Member.create(
       {
-        discordId: raw,
+        discordId: raw.discordId,
         name: raw.name,
-        password: raw.password,
+        origin: raw.origin,
+        createdAt: raw.createdAt,
+        updatedAt: raw.updatedAt,
       },
       new UniqueEntityID(raw.id)
     );
   }
 
-  static toPrisma(student: Member): Prisma.UserUncheckedCreateInput {
+  static toPrisma(member: Member): Prisma.MemberUncheckedCreateInput {
     return {
-      id: student.id.toString(),
-      name: student.name,
-      email: student.email,
-      password: student.password,
+      id: member.id.toString(),
+      discordId: member.discordId,
+      name: member.name,
+      origin: member.origin,
+      createdAt: member.createdAt,
+      updatedAt: member.updatedAt,
     };
   }
 }
