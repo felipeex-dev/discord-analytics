@@ -1,4 +1,11 @@
-import { Client, GatewayIntentBits, REST, Routes } from "discord.js";
+import {
+  Client,
+  GatewayIntentBits,
+  GuildMember,
+  Partials,
+  REST,
+  Routes,
+} from "discord.js";
 import {
   addInvite,
   addInviteCommand,
@@ -29,6 +36,7 @@ export class DiscordBOT extends Client {
         GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildInvites,
       ],
+      partials: [Partials.GuildMember],
     });
   }
 
@@ -51,15 +59,14 @@ export class DiscordBOT extends Client {
 }
 
 const discord = new DiscordBOT();
-discord.init();
 
-discord.on("ready", async (client) => {
+discord.once("ready", async (client) => {
   console.log("Discord BOT started!");
 
   const redis = new RedisService();
   const invitesCache = await redis.keys("*");
   const guildInvites = await client.guilds.cache
-    .get(env.DISCORD_GUILD)
+    .get(env.DISCORD_GUILD_ID)
     ?.invites.fetch();
 
   invitesCache.map(async (invite) => {
@@ -88,3 +95,20 @@ discord.on("guildMemberAdd", (member) => {
 
   discordMemberRepository.create(member);
 });
+
+discord.on("guildMemberUpdate", (oldMember, newMember) => {
+  const hadClientRole = oldMember.roles.cache.some(
+    (role) => role.id === env.DISCORD_CLIENT_ROLE_ID
+  );
+  const hasClientRole = newMember.roles.cache.some(
+    (role) => role.id === env.DISCORD_CLIENT_ROLE_ID
+  );
+
+  if (!hadClientRole && hasClientRole) {
+    console.log("Tem o cargo");
+  } else if (hadClientRole && !hasClientRole) {
+    console.log("Não tem o cargo");
+  }
+});
+
+discord.init();

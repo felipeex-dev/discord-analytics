@@ -8,6 +8,11 @@ export class InMemoryMemberRepository implements MemberRepository {
     this.items.push(member);
   }
 
+  async update(member: Member): Promise<void> {
+    const memberIndex = this.items.findIndex((item) => item.equals(member));
+    this.items[memberIndex] = member;
+  }
+
   async findByDiscordId(discordId: string) {
     const member = this.items.find((member) => member.discordId === discordId);
 

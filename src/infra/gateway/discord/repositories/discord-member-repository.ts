@@ -34,7 +34,9 @@ export class DiscordMemberRepository implements GatewayMemberRepository {
           name: displayName,
         });
 
-        const channel = await client.channels.fetch(env.DISCORD_INPUT_CHANNEL);
+        const channel = await client.channels.fetch(
+          env.DISCORD_INPUT_CHANNEL_ID
+        );
 
         if (channel?.isTextBased()) {
           const prismaInviteRepository = new PrismaInviteRepository();

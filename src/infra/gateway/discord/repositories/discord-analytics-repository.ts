@@ -42,22 +42,26 @@ export class DiscordAnalyticsRepository implements GatewayAnalyticsRepository {
         > - **Quantidade de Entradas**: *${inviteUses}*
         > - **Membros convertidos**: *${invite.members.count}*
         > - **Clientes convertidos**: *${invite.members.clients.count}*
-        > - **Taxa de conversão para membros**: *${
-          (invite.members.count / Number(inviteUses)) * 100
-        }%*
-        > - **Taxa de conversão para clientes**: *${
-          (invite.members.clients.count / Number(inviteUses)) * 100
-        }%*
-        > - **CAC (Custo de aquisição por membro)**: *R$ ${
-          isFinite(invite.investmentValue / invite.members.count)
-            ? invite.investmentValue / invite.members.count
-            : "dados insuficientes."
-        }*
-        > - **CAC (Custo de aquisição por cliente)**: *R$ ${
-          isFinite(invite.investmentValue / invite.members.clients.count)
-            ? invite.investmentValue / invite.members.clients.count
-            : "dados insuficientes."
-        }*
+        > - **Taxa de conversão para membros**: *${(
+          (invite.members.count / Number(inviteUses)) *
+          100
+        ).toFixed(2)}%*
+        > - **Taxa de conversão para clientes**: *${(
+          (invite.members.clients.count / Number(inviteUses)) *
+          100
+        ).toFixed(2)}%*
+        > - **CAC (Custo de aquisição por membro)**: *R$ ${(isFinite(
+          invite.investmentValue / invite.members.count
+        )
+          ? invite.investmentValue / invite.members.count
+          : 0
+        ).toFixed(2)}*
+        > - **CAC (Custo de aquisição por cliente)**: *R$ ${(isFinite(
+          invite.investmentValue / invite.members.clients.count
+        )
+          ? invite.investmentValue / invite.members.clients.count
+          : 0
+        ).toFixed(2)}*
       `,
       });
     } else {

@@ -24,6 +24,14 @@ export class Member extends Entity<MemberProps> {
     return this.props.name;
   }
 
+  get isClient() {
+    return this.props.isClient;
+  }
+
+  set isClient(isClient: boolean) {
+    this.props.isClient = isClient;
+  }
+
   get createdAt() {
     return this.props.createdAt;
   }
