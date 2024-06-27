@@ -7,4 +7,14 @@ export class InMemoryInviteRepository implements InviteRepository {
   async register(invite: Invite) {
     this.items.push(invite);
   }
+
+  async findByCode(code: string) {
+    const invite = this.items.find((item) => item.code === code);
+
+    if (!invite) {
+      return null;
+    }
+
+    return invite;
+  }
 }

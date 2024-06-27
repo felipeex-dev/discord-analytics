@@ -3,11 +3,13 @@ import { GatewayMemberRepository } from "../../repositories/gateway-member-repos
 import { CreateMemberUseCase } from "@/domain/analytics/application/use-case/create-member";
 import { PrismaMemberRepository } from "@/infra/database/prisma/repositories/prisma-member-repository";
 import { RedisService } from "@/infra/cache/redis";
+import { PrismaInviteRepository } from "@/infra/database/prisma/repositories/prisma-invite-repository";
+import { GetInviteByCodeUseCase } from "@/domain/analytics/application/use-case/get-invite-by-code";
 
 export class DiscordMemberRepository implements GatewayMemberRepository {
   constructor(private redis: RedisService) {}
 
-  async create({ guild, id, displayName }: GuildMember) {
+  async create({ guild, id, displayName, client }: GuildMember) {
     const invites = await guild.invites.fetch();
     const invitesCache = await this.redis.keys("*");
 
@@ -30,6 +32,22 @@ export class DiscordMemberRepository implements GatewayMemberRepository {
           discordId: id,
           name: displayName,
         });
+
+        const channel = await client.channels.fetch("1255612583365312543");
+
+        if (channel?.isTextBased()) {
+          const prismaInviteRepository = new PrismaInviteRepository();
+          const getInviteByCodeUseCase = new GetInviteByCodeUseCase(
+            prismaInviteRepository
+          );
+
+          const prismaInvite = await getInviteByCodeUseCase.execute({
+            code: invite,
+          });
+          await channel.send(
+            `Novo membro convertido por ${prismaInvite.value?.invite.name} - ${prismaInvite.value?.invite.code}`
+          );
+        }
 
         this.redis.disconnect();
       }

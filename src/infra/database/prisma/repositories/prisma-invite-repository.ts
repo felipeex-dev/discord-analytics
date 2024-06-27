@@ -11,4 +11,14 @@ export class PrismaInviteRepository implements InviteRepository {
       data,
     });
   }
+
+  async findByCode(code: string) {
+    const invite = await prisma.invite.findUnique({ where: { code } });
+
+    if (!invite) {
+      return null;
+    }
+
+    return PrismaInviteMapper.toDomain(invite);
+  }
 }
