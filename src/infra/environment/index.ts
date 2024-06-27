@@ -11,6 +11,8 @@ export type Env = z.infer<typeof envSchema>;
 const environmentSchema = z.object({
   DISCORD_TOKEN: z.string(),
   DISCORD_CLIENT_ID: z.string(),
+  DISCORD_GUILD: z.string(),
+  DISCORD_INPUT_CHANNEL: z.string(),
   REDIS_HOST: z.string().optional().default("127.0.0.1"),
   REDIS_PORT: z.coerce.number().optional().default(6379),
   REDIS_PASSWORD: z.string(),

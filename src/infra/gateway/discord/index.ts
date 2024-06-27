@@ -53,8 +53,23 @@ export class DiscordBOT extends Client {
 const discord = new DiscordBOT();
 discord.init();
 
-discord.on("ready", async () => {
+discord.on("ready", async (client) => {
   console.log("Discord BOT started!");
+
+  const redis = new RedisService();
+  const guildInvites = await client.guilds.cache
+    .get(env.DISCORD_GUILD)
+    ?.invites.fetch();
+  const invitesCache = await redis.keys("*");
+
+  invitesCache.map(async (invite) => {
+    const guildInvite = guildInvites?.get(invite);
+    if (!(guildInvite && guildInvite.uses)) return;
+
+    await redis.set(invite, guildInvite.uses.toString());
+  });
+
+  redis.disconnect();
 });
 
 discord.on("interactionCreate", async (interaction) => {

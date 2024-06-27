@@ -5,6 +5,7 @@ import { PrismaMemberRepository } from "@/infra/database/prisma/repositories/pri
 import { RedisService } from "@/infra/cache/redis";
 import { PrismaInviteRepository } from "@/infra/database/prisma/repositories/prisma-invite-repository";
 import { GetInviteByCodeUseCase } from "@/domain/analytics/application/use-case/get-invite-by-code";
+import { env } from "@/infra/environment";
 
 export class DiscordMemberRepository implements GatewayMemberRepository {
   constructor(private redis: RedisService) {}
@@ -33,7 +34,7 @@ export class DiscordMemberRepository implements GatewayMemberRepository {
           name: displayName,
         });
 
-        const channel = await client.channels.fetch("1255612583365312543");
+        const channel = await client.channels.fetch(env.DISCORD_INPUT_CHANNEL);
 
         if (channel?.isTextBased()) {
           const prismaInviteRepository = new PrismaInviteRepository();
