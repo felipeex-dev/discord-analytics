@@ -26,6 +26,7 @@
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^5.16.0",
+    "date-fns": "^3.6.0",
     "discord.js": "^14.15.3",
     "dotenv": "^16.4.5",
     "ioredis": "^5.4.1",

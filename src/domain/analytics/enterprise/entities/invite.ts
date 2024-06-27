@@ -6,6 +6,12 @@ export interface InviteProps {
   name: string;
   code: string;
   investmentValue: number;
+  members: {
+    count: number;
+    clients: {
+      count: number;
+    };
+  };
   createdAt: Date;
   updatedAt?: Date | null;
 }
@@ -31,12 +37,20 @@ export class Invite extends Entity<InviteProps> {
     return this.props.updatedAt;
   }
 
+  get members() {
+    return this.props.members;
+  }
+
   static create(
-    props: Optional<InviteProps, "createdAt">,
+    props: Optional<InviteProps, "createdAt" | "members">,
     id?: UniqueEntityID
   ) {
     const invite = new Invite(
-      { ...props, createdAt: props.createdAt ?? new Date() },
+      {
+        ...props,
+        createdAt: props.createdAt ?? new Date(),
+        members: props.members ?? { count: 0, clients: { count: 0 } },
+      },
       id
     );
     return invite;

@@ -3,7 +3,9 @@ import { Invite } from "@/domain/analytics/enterprise/entities/invite";
 import { Prisma, Invite as PrismaInvite } from "@prisma/client";
 
 export class PrismaInviteMapper {
-  static toDomain(raw: PrismaInvite): Invite {
+  static toDomain(
+    raw: PrismaInvite & { _count: { members: number; clients: number } }
+  ): Invite {
     return Invite.create(
       {
         name: raw.name,
@@ -11,6 +13,12 @@ export class PrismaInviteMapper {
         investmentValue: raw.investmentValue,
         createdAt: raw.createdAt,
         updatedAt: raw.updatedAt,
+        members: {
+          count: raw._count.members,
+          clients: {
+            count: raw._count.clients,
+          },
+        },
       },
       new UniqueEntityID(raw.id)
     );

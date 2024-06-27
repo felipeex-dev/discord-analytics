@@ -1,4 +1,3 @@
-import { Member } from "@prisma/client";
 import { Invite } from "../../enterprise/entities/invite";
 
 export abstract class InviteRepository {

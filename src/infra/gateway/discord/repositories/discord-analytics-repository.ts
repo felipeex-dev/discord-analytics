@@ -7,7 +7,7 @@ import {
 } from "discord.js";
 import { PrismaInviteRepository } from "@/infra/database/prisma/repositories/prisma-invite-repository";
 import { GetInviteByCodeUseCase } from "@/domain/analytics/application/use-case/get-invite-by-code";
-import { prisma } from "@/infra/database/prisma";
+import { format } from "date-fns";
 
 export class DiscordAnalyticsRepository implements GatewayAnalyticsRepository {
   constructor(private redis: RedisService) {}
@@ -28,59 +28,47 @@ export class DiscordAnalyticsRepository implements GatewayAnalyticsRepository {
     });
 
     if (prismaInvite.value?.invite) {
-      const inviteUses = await this.redis.get(inviteCode);
-      const prismaInviteCount = await prisma.invite.findUnique({
-        where: { code: inviteCode },
-        select: { _count: { select: { members: true } } },
-      });
+      const invite = prismaInvite.value.invite;
+      const inviteUses = (await this.redis.get(inviteCode)) ?? "0";
+      const initInviteDate = format(invite.createdAt, "dd/MM/yyyy 'as' HH:mm");
 
-      const quantityOfMembers = prismaInviteCount?._count.members!;
-
-      const embed = new EmbedBuilder()
-        .setColor("White")
-        .setTitle(
-          `${prismaInvite.value.invite.name} - ${prismaInvite.value.invite.code}`
-        )
-        .setFields([
-          {
-            name: "Valor investido",
-            value: "```R$" + prismaInvite.value.invite.investmentValue + "```",
-          },
-          { name: "Quantidade de Entradas", value: "```" + inviteUses + "```" },
-          {
-            name: "Membros convertidos",
-            value: "```" + quantityOfMembers + "```",
-          },
-          { name: "Clientes convertidos", value: "```?```" },
-          { name: "Taxa de conversão para clientes", value: "```0%```" },
-          {
-            name: "CAC (Custo de aquisição de membros)",
-            value:
-              "```R$" +
-              (quantityOfMembers === 0 ||
-              prismaInvite.value.invite.investmentValue === 0
-                ? "Sem dados"
-                : prismaInvite.value.invite.investmentValue /
-                  quantityOfMembers) +
-              "```",
-          },
-          { name: "CAC (Custo de aquisição de clientes)", value: "```?```" },
-        ]);
-
-      await interaction.editReply({ embeds: [embed] });
-    } else {
       await interaction.editReply({
-        content: "Esse código de convite não existe.",
+        content: `
+        # ${invite.name} | Data de inicio: ${initInviteDate}
+        > - **Código de convite**: *${
+          invite.code
+        }* ([Acessar convite](https://discord.gg/${invite.code}))
+        > - **Valor investido**: *R$${invite.investmentValue}*
+        > - **Quantidade de Entradas**: *${inviteUses}*
+        > - **Membros convertidos**: *${invite.members.count}*
+        > - **Clientes convertidos**: *${invite.members.clients.count}*
+        > - **Taxa de conversão para membros**: *${
+          (invite.members.count / Number(inviteUses)) * 100
+        }%*
+        > - **Taxa de conversão para clientes**: *${
+          (invite.members.clients.count / Number(inviteUses)) * 100
+        }%*
+        > - **CAC (Custo de aquisição por membro)**: *R$ ${
+          isFinite(invite.investmentValue / invite.members.count)
+            ? invite.investmentValue / invite.members.count
+            : "dados insuficientes."
+        }*
+        > - **CAC (Custo de aquisição por cliente)**: *R$ ${
+          isFinite(invite.investmentValue / invite.members.clients.count)
+            ? invite.investmentValue / invite.members.clients.count
+            : "dados insuficientes."
+        }*
+      `,
+      });
+    } else {
+      const notExistInviteEmbed = new EmbedBuilder()
+        .setDescription(
+          "<:felipeexError:1255836519118143500> Esse código de convite não existe."
+        )
+        .setColor("#4971a0");
+      await interaction.editReply({
+        embeds: [notExistInviteEmbed],
       });
     }
   }
 }
-
-/* Divulgação 1 - BrmGuU592M | Data de inicio: 25/06/24 as 13:50
-Valor investido: R$25
-Quantidade de Entradas: 15
-Membros convertidos: 10
-Clientes convertidos: 5
-Taxa de conversão para clientes: 50%
-CAC (Custo de aquisição de clientes): R$5
-Status: Ativo */

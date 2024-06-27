@@ -6,6 +6,7 @@ export interface MemberProps {
   inviteCode: string;
   discordId: string;
   name: string;
+  isClient: boolean;
   createdAt: Date;
   updatedAt?: Date | null;
 }
@@ -32,11 +33,15 @@ export class Member extends Entity<MemberProps> {
   }
 
   static create(
-    props: Optional<MemberProps, "createdAt">,
+    props: Optional<MemberProps, "createdAt" | "isClient">,
     id?: UniqueEntityID
   ) {
     const member = new Member(
-      { ...props, createdAt: props.createdAt ?? new Date() },
+      {
+        ...props,
+        createdAt: props.createdAt ?? new Date(),
+        isClient: props.isClient ?? false,
+      },
       id
     );
     return member;

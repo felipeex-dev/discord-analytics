@@ -1,6 +1,10 @@
 import { RedisService } from "@/infra/cache/redis";
 import { GatewayInviteRepository } from "../../repositories/gateway-invite-respository";
-import { CacheType, ChatInputCommandInteraction } from "discord.js";
+import {
+  CacheType,
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+} from "discord.js";
 import { PrismaInviteRepository } from "@/infra/database/prisma/repositories/prisma-invite-repository";
 import { RegisterInviteUseCase } from "@/domain/analytics/application/use-case/register-invite";
 
@@ -43,10 +47,16 @@ export class DiscordInviteRepository implements GatewayInviteRepository {
         (invite) => invite.code === inviteCodeValue
       );
 
-      if (!isExistInviteToAdd)
+      if (!isExistInviteToAdd) {
+        const notExistInviteEmbed = new EmbedBuilder()
+          .setDescription(
+            "<:felipeexError:1255836519118143500> Esse código de convite não existe."
+          )
+          .setColor("#4971a0");
         return await interaction.editReply({
-          content: "Esse código de convite não existe.",
+          embeds: [notExistInviteEmbed],
         });
+      }
 
       const inviteExistInCache = await this.redis.get(
         inviteCodeValue.toString()
@@ -58,8 +68,14 @@ export class DiscordInviteRepository implements GatewayInviteRepository {
           inviteCodeValue.toString(),
           inviteUsesOrZero.toString()
         );
+
+        const inviteAddedEmbed = new EmbedBuilder()
+          .setDescription(
+            "<:felipeexSuccess:1255838822059474944> Convite adicionado com sucesso!"
+          )
+          .setColor("#4971a0");
         await interaction.editReply({
-          content: "Convite adicionado com sucesso!",
+          embeds: [inviteAddedEmbed],
         });
 
         const prismaInviteRepository = new PrismaInviteRepository();
@@ -75,8 +91,14 @@ export class DiscordInviteRepository implements GatewayInviteRepository {
 
         this.redis.disconnect();
       } else {
+        const invitedWasAdded = new EmbedBuilder()
+          .setDescription(
+            "<:felipeexWarn:1255838220311199844> Esse convite já foi adicionado."
+          )
+          .setColor("#4971a0");
+
         await interaction.editReply({
-          content: "Esse convite já foi adicionado.",
+          embeds: [invitedWasAdded],
         });
       }
     }

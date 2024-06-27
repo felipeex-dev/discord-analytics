@@ -57,10 +57,10 @@ discord.on("ready", async (client) => {
   console.log("Discord BOT started!");
 
   const redis = new RedisService();
+  const invitesCache = await redis.keys("*");
   const guildInvites = await client.guilds.cache
     .get(env.DISCORD_GUILD)
     ?.invites.fetch();
-  const invitesCache = await redis.keys("*");
 
   invitesCache.map(async (invite) => {
     const guildInvite = guildInvites?.get(invite);
