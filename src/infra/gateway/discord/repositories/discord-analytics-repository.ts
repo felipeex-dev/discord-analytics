@@ -57,7 +57,8 @@ export class DiscordAnalyticsRepository implements GatewayAnalyticsRepository {
             name: "CAC (Custo de aquisição de membros)",
             value:
               "```R$" +
-              (quantityOfMembers === 0
+              (quantityOfMembers === 0 ||
+              prismaInvite.value.invite.investmentValue === 0
                 ? "Sem dados"
                 : prismaInvite.value.invite.investmentValue /
                   quantityOfMembers) +

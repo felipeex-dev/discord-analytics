@@ -44,8 +44,9 @@ export class DiscordMemberRepository implements GatewayMemberRepository {
           const prismaInvite = await getInviteByCodeUseCase.execute({
             code: invite,
           });
+
           await channel.send(
-            `Novo membro convertido por ${prismaInvite.value?.invite.name} - ${prismaInvite.value?.invite.code}`
+            `<@${id}> foi convertido por ${prismaInvite.value?.invite.name} - ${prismaInvite.value?.invite.code}`
           );
         }
 
