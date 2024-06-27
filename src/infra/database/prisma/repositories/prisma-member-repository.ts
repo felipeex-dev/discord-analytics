@@ -12,6 +12,17 @@ export class PrismaMemberRepository implements MemberRepository {
     });
   }
 
+  async update(member: Member) {
+    const data = PrismaMemberMapper.toPrisma(member);
+
+    await prisma.member.update({
+      where: {
+        discordId: data.discordId,
+      },
+      data,
+    });
+  }
+
   async findByDiscordId(discordId: string): Promise<Member | null> {
     const member = await prisma.member.findUnique({ where: { discordId } });
 

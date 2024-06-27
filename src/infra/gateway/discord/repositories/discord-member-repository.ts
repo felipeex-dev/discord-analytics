@@ -1,4 +1,4 @@
-import { GuildMember } from "discord.js";
+import { GuildMember, PartialGuildMember } from "discord.js";
 import { GatewayMemberRepository } from "../../repositories/gateway-member-repository";
 import { CreateMemberUseCase } from "@/domain/analytics/application/use-case/create-member";
 import { PrismaMemberRepository } from "@/infra/database/prisma/repositories/prisma-member-repository";
@@ -6,6 +6,7 @@ import { RedisService } from "@/infra/cache/redis";
 import { PrismaInviteRepository } from "@/infra/database/prisma/repositories/prisma-invite-repository";
 import { GetInviteByCodeUseCase } from "@/domain/analytics/application/use-case/get-invite-by-code";
 import { env } from "@/infra/environment";
+import { UpdateMemberUseCase } from "@/domain/analytics/application/use-case/update-member";
 
 export class DiscordMemberRepository implements GatewayMemberRepository {
   constructor(private redis: RedisService) {}
@@ -55,6 +56,31 @@ export class DiscordMemberRepository implements GatewayMemberRepository {
 
         this.redis.disconnect();
       }
+    });
+  }
+
+  async update(
+    oldMember: GuildMember | PartialGuildMember,
+    newMember: GuildMember
+  ): Promise<void> {
+    const hadClientRole = oldMember.roles.cache.some(
+      (role) => role.id === env.DISCORD_CLIENT_ROLE_ID
+    );
+
+    const hasClientRole = newMember.roles.cache.some(
+      (role) => role.id === env.DISCORD_CLIENT_ROLE_ID
+    );
+
+    const hasClientRoleNow = !hadClientRole && hasClientRole;
+
+    const discordMemberRepository = new PrismaMemberRepository();
+    const updateMemberUseCase = new UpdateMemberUseCase(
+      discordMemberRepository
+    );
+
+    updateMemberUseCase.execute({
+      discordId: oldMember.id,
+      isClient: hasClientRoleNow,
     });
   }
 }

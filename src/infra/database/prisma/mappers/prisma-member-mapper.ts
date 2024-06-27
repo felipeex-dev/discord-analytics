@@ -9,6 +9,7 @@ export class PrismaMemberMapper {
         inviteCode: raw.inviteCode,
         discordId: raw.discordId,
         name: raw.name,
+        isClient: raw.isClient,
         createdAt: raw.createdAt,
         updatedAt: raw.updatedAt,
       },
@@ -22,6 +23,7 @@ export class PrismaMemberMapper {
       id: member.id.toString(),
       discordId: member.discordId,
       name: member.name,
+      isClient: member.isClient,
       createdAt: member.createdAt,
       updatedAt: member.updatedAt,
     };

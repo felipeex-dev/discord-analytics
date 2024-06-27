@@ -1,6 +1,5 @@
 import { InMemoryMemberRepository } from "@test/repositories/in-memory-member-repository";
 import { makeMember } from "@test/factories/make-member";
-import { MemberAlreadyExistError } from "./errors/member-already-exist";
 import { UpdateMemberUseCase } from "./update-member";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 

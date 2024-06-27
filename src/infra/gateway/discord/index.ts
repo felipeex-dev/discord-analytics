@@ -21,6 +21,8 @@ import {
   generateAnalytics,
   generateAnalyticsCommand,
 } from "./commands/analytics/generate-analytics-command";
+import { PrismaMemberRepository } from "@/infra/database/prisma/repositories/prisma-member-repository";
+import { UpdateMemberUseCase } from "@/domain/analytics/application/use-case/update-member";
 
 const commands = [
   { function: addInvite, informations: addInviteCommand },
@@ -97,18 +99,10 @@ discord.on("guildMemberAdd", (member) => {
 });
 
 discord.on("guildMemberUpdate", (oldMember, newMember) => {
-  const hadClientRole = oldMember.roles.cache.some(
-    (role) => role.id === env.DISCORD_CLIENT_ROLE_ID
-  );
-  const hasClientRole = newMember.roles.cache.some(
-    (role) => role.id === env.DISCORD_CLIENT_ROLE_ID
-  );
+  const redis = new RedisService();
+  const discordMemberRepository = new DiscordMemberRepository(redis);
 
-  if (!hadClientRole && hasClientRole) {
-    console.log("Tem o cargo");
-  } else if (hadClientRole && !hasClientRole) {
-    console.log("Não tem o cargo");
-  }
+  discordMemberRepository.update(oldMember, newMember);
 });
 
 discord.init();
