@@ -42,13 +42,17 @@ export class DiscordAnalyticsRepository implements GatewayAnalyticsRepository {
         > - **Quantidade de Entradas**: *${inviteUses}*
         > - **Membros convertidos**: *${invite.members.count}*
         > - **Clientes convertidos**: *${invite.members.clients.count}*
-        > - **Taxa de conversão para membros**: *${(
-          (invite.members.count / Number(inviteUses)) *
-          100
+        > - **Taxa de conversão para membros**: *${(!isNaN(
+          (invite.members.count / Number(inviteUses)) * 100
+        )
+          ? (invite.members.count / Number(inviteUses)) * 100
+          : 0
         ).toFixed(2)}%*
-        > - **Taxa de conversão para clientes**: *${(
-          (invite.members.clients.count / Number(inviteUses)) *
-          100
+        > - **Taxa de conversão para clientes**: *${(!isNaN(
+          (invite.members.clients.count / Number(inviteUses)) * 100
+        )
+          ? (invite.members.clients.count / Number(inviteUses)) * 100
+          : 0
         ).toFixed(2)}%*
         > - **CAC (Custo de aquisição por membro)**: *R$ ${(isFinite(
           invite.investmentValue / invite.members.count

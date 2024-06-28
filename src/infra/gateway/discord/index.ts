@@ -21,8 +21,6 @@ import {
   generateAnalytics,
   generateAnalyticsCommand,
 } from "./commands/analytics/generate-analytics-command";
-import { PrismaMemberRepository } from "@/infra/database/prisma/repositories/prisma-member-repository";
-import { UpdateMemberUseCase } from "@/domain/analytics/application/use-case/update-member";
 
 const commands = [
   { function: addInvite, informations: addInviteCommand },
@@ -64,6 +62,7 @@ const discord = new DiscordBOT();
 
 discord.once("ready", async (client) => {
   console.log("Discord BOT started!");
+  console.log("Syncing invites uses.");
 
   const redis = new RedisService();
   const invitesCache = await redis.keys("*");
@@ -78,11 +77,13 @@ discord.once("ready", async (client) => {
     await redis.set(invite, guildInvite.uses.toString());
   });
 
+  console.log("Synced invites uses.");
   redis.disconnect();
 });
 
 discord.on("interactionCreate", async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
+  if (!interaction.memberPermissions?.has("Administrator")) return;
 
   commands.map((command) => {
     if (interaction.commandName === command.informations.name) {

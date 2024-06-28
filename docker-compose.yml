@@ -10,6 +10,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: gAX78IkIs9HhokQrqUZkYihEkGyCl4NQGMFJ6iVj
       POSTGRES_DB: discord-analytics
+    volumes:
+      - ./data/postgresql:/bitnami/postgresql
 
   cache:
     container_name: discord-analytics-cache

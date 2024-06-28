@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Esse BOT tem como objetivo analisar dados, para que possa ser feito um levantamento.",
   "scripts": {
+    "start": "ts-node -r tsconfig-paths/register src/infra/main.ts",
     "start:dev": "tsnd -r tsconfig-paths/register src/infra/main.ts",
     "test": "vitest run",
     "test:watch": "vitest"
